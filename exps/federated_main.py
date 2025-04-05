@@ -48,6 +48,7 @@ def FedProto_taskheter(args, train_dataset, test_dataset, user_groups, user_grou
     idxs_users = np.arange(args.num_users)
     train_loss, train_accuracy = [], []
 
+
     # 动态调整原型损失权重
     def get_ld_weight(round):
         return args.ld * (0.5 + 0.5 * math.cos(math.pi * round / args.rounds))
@@ -78,7 +79,7 @@ def FedProto_taskheter(args, train_dataset, test_dataset, user_groups, user_grou
             local_losses.append(copy.deepcopy(loss['total']))
             local_protos[idx] = {
                 'protos': protos,
-                'counts': counts  # 记录每个类别的样本数量
+                'counts': counts  
             }
             
             # 记录训练指标
