@@ -280,7 +280,7 @@ def femnist_noniid(args, num_users, n_list, k_list):
     for i in range(num_users):
         n = n_list[i]
         k = k_list[i]
-        k_len = 96 #args.train_shots_max
+        k_len = args.train_shots_max
         classes = random.sample(range(0, args.num_classes), n)
         classes = np.sort(classes)
         print("user {:d}: {:d}-way {:d}-shot".format(i + 1, n, k))

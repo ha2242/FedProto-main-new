@@ -83,46 +83,28 @@ class FEMNIST(data.Dataset):
         # self.data, self.targets = torch.load(os.path.join(self.processed_folder, data_file))
 
 
-    # def __getitem__(self, index):
-    #     """
-    #     Args:
-    #         index (int): Index
-
-    #     Returns:
-    #         tuple: (image, target) where target is index of the target class.
-    #     """
-    #     img, target = self.data[index], int(self.targets[index])
-
-    #     # doing this so that it is consistent with all other datasets
-    #     # to return a PIL Image
-    #     img = Image.open(img).convert('L')
-    #     # loader = transforms.Compose([transforms.ToTensor()])
-    #     # img = loader(img).unsqueeze(0)[0, 0, :, :]
-
-    #     if self.transform is not None:
-    #         img = self.transform(img)
-
-    #     if self.target_transform is not None:
-    #         target = self.target_transform(target)
-
-    #     return img, target
     def __getitem__(self, index):
-        img_path = self.data[index]
-        #print(f"Attempting to open image at path: {img_path}")  # 添加日志记录
-        img, target = img_path, int(self.targets[index])
-    
-        try:
-            img = Image.open(img_path).convert('L')
-        except FileNotFoundError:
-            print(f"File not found: {img_path}")
-            raise
-        
+        """
+        Args:
+            index (int): Index
+
+        Returns:
+            tuple: (image, target) where target is index of the target class.
+        """
+        img, target = self.data[index], int(self.targets[index])
+
+        # doing this so that it is consistent with all other datasets
+        # to return a PIL Image
+        img = Image.open(img).convert('L')
+        # loader = transforms.Compose([transforms.ToTensor()])
+        # img = loader(img).unsqueeze(0)[0, 0, :, :]
+
         if self.transform is not None:
             img = self.transform(img)
-    
+
         if self.target_transform is not None:
             target = self.target_transform(target)
-    
+
         return img, target
 
     def __len__(self):
@@ -180,42 +162,3 @@ class FEMNIST(data.Dataset):
         targets = targets.reshape([num_class * num_img])
 
         return data, targets
-    # def generate_ds(self, args, root):
-    #         num_class = args.num_classes
-    #         num_img = args.train_shots_max * args.num_users
-
-    #         data = []
-    #         targets = torch.zeros([num_class * num_img])
-    #         files = os.listdir(os.path.join(root, 'data', 'raw_data', 'by_class'))
-
-    #         for i in range(num_class):
-    #             for k in range(num_img):
-    #                 # 使用 os.path.join 构建路径
-    #                 img = os.path.join(root, 'data', 'raw_data', 'by_class', files[i], 'train_' + files[i], 'train_' + files[i] + '_'+str("%05d"%k)+'.png')
-    #                 if not os.path.exists(img):
-    #                     print(f"File not found: {img}")  # 打印缺失的文件路径
-    #                     continue  # 跳过缺失的文件
-    #                 data.append(img)
-    #                 targets[i * num_img + k] = i
-
-    #         targets = targets.reshape([num_class * num_img])
-
-    #         return data, targets
-
-    # def generate_ds_test(self, args, root):
-    #     num_class = args.num_classes
-    #     num_img = args.test_shots * args.num_users
-    #     data = []
-    #     targets = torch.zeros([num_class * num_img])
-    #     files = os.listdir(os.path.join(root, 'data', 'raw_data', 'by_class'))
-    #     for i in range(num_class):
-    #         for k in range(num_img):
-    #             # 使用 os.path.join 构建路径
-    #             img = os.path.join(root, 'data', 'raw_data', 'by_class', files[i], 'hsf_0', 'hsf_0'+'_00'+str("%03d"%(k))+'.png')
-    #             if not os.path.exists(img):
-    #                 print(f"File not found: {img}")  # 打印缺失的文件路径
-    #                 continue  # 跳过缺失的文件
-    #             data.append(img)
-    #             targets[i * num_img + k] = i
-    #     targets = targets.reshape([num_class * num_img])
-    #     return data, targets

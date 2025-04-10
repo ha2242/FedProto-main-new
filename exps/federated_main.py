@@ -34,8 +34,6 @@ model_urls = {
     'resnet152': 'https://download.pytorch.org/models/resnet152-b121ed2d.pth',
 }
 
-
-
 def FedProto_taskheter(args, train_dataset, test_dataset, user_groups, user_groups_lt, local_model_list, classes_list):
     """联邦原型学习主函数 - 任务异构场景"""
     # 初始化日志记录器
@@ -47,7 +45,6 @@ def FedProto_taskheter(args, train_dataset, test_dataset, user_groups, user_grou
     global_protos = {}  # 使用字典存储全局原型
     idxs_users = np.arange(args.num_users)
     train_loss, train_accuracy = [], []
-
 
     # 动态调整原型损失权重
     def get_ld_weight(round):
@@ -79,7 +76,7 @@ def FedProto_taskheter(args, train_dataset, test_dataset, user_groups, user_grou
             local_losses.append(copy.deepcopy(loss['total']))
             local_protos[idx] = {
                 'protos': protos,
-                'counts': counts  
+                'counts': counts  # 记录每个类别的样本数量
             }
             
             # 记录训练指标

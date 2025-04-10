@@ -11,8 +11,9 @@ import numpy as np
 import math
 import torch.nn.functional as F
 
-class DatasetSplit(Dataset):
-    """An abstract Dataset class wrapped around Pytorch Dataset class."""
+class DatasetSplit(Dataset):#分割子集，将原始数据集分割为子集，根据传入的索引 idxs 返回特定的数据样本
+    """An abstract Dataset class wrapped around Pytorch Dataset class.
+    """
 
     def __init__(self, dataset, idxs):
         """
@@ -21,38 +22,41 @@ class DatasetSplit(Dataset):
         参数:
         dataset: 数据集，包含了一系列的数据样本。
         idxs: 数据集索引列表，指定了数据样本的顺序或选择。
+        
+        该构造方法的主要作用是将传入的数据集和索引列表进行初始化，并确保索引列表中的索引值为整数类型。
         """
+        # 初始化dataset属性
         self.dataset = dataset
+        
+        # 将idxs中的索引转换为整数类型，并初始化idxs属性
         self.idxs = [int(i) for i in idxs]
 
     def __len__(self):
+        """
+        实现对象的长度属性，返回索引列表的长度。
+    
+        通过重写__len__方法，使得len()函数可以应用于该对象，反映其索引列表的大小。
+    
+        Returns:
+            int: 索引列表的长度。
+        """
         return len(self.idxs)
 
     def __getitem__(self, item):
         """
         根据给定的索引item从数据集中获取元素。
-        
+    
         参数:
         item (int): 要访问的元素的索引。
-        
+    
         返回:
-        tuple: 包含图像数据和标签的张量。
+        tuple: 包含两个torch.tensor对象，分别代表图像数据和标签。
         """
-        # 获取原始数据
+        # 通过item索引从self.idxs中获取对应的数据集索引，并从数据集中提取图像和标签
         image, label = self.dataset[self.idxs[item]]
-        
-        # 使用推荐的方式创建张量副本
-        if isinstance(image, torch.Tensor):
-            image = image.clone().detach()
-        else:
-            image = torch.tensor(image)
-            
-        if isinstance(label, torch.Tensor):
-            label = label.clone().detach()
-        else:
-            label = torch.tensor(label)
-            
-        return image, label
+        # 将图像和标签转换为torch.tensor类型，并以元组的形式返回
+        return torch.tensor(image), torch.tensor(label)
+
 
 class LocalUpdate(object):
     def __init__(self, args, dataset, idxs):
@@ -565,6 +569,7 @@ def fine_tune(self, args, dataset, idxs, model):
 
     return model.state_dict()
 
+
 def test_inference(args, model, test_dataset, global_protos):
     """ 返回测试准确率和损失。
 
@@ -730,6 +735,7 @@ def test_inference_new_cifar(args, local_model_list, test_dataset, classes_list,
     acc = correct / total
 
     return loss, acc
+
 
 def test_inference_new_het(args, local_model_list, test_dataset, global_protos=[]):
     """ 返回测试的准确率。
@@ -965,6 +971,7 @@ def test_inference_new_het_lt(args, local_model_list, test_dataset, classes_list
             loss_list.append(loss2)
 
     return acc_list_l, acc_list_g, loss_list
+
 
 def save_protos(args, local_model_list, test_dataset, user_groups_gt):
     """ 计算测试准确率和损失，并保存模型的原型向量及其对应的标签。
